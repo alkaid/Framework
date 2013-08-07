@@ -7,6 +7,6 @@ import java.io.Serializable;
  *
  */
 @SuppressWarnings("serial")
-public class BaseModel implements Serializable{
+public class BModel implements Serializable{
 
 }
