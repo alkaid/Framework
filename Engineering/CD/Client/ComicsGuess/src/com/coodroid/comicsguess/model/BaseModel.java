@@ -8,4 +8,5 @@ import com.alkaid.base.model.BModel;
  */
 @SuppressWarnings("serial")
 public class BaseModel extends BModel {
+
 }
