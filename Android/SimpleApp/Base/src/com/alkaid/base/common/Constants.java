@@ -17,7 +17,7 @@ public class Constants {
 	/** bundle传递数据时的key */
 	public static class bundleKey{
 		/** 需要弹出的信息*/
-		public static final String toastMag="toastMsg";
+		public static final String toastMsg="toastMsg";
 		/** 通用业务异常 */
 		public static final String exception="exception";
 	}
