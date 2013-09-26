@@ -37,12 +37,21 @@ public abstract class BaseSQL{
 	}
 	
 	/**
-	 * 用于执行创建数据库表脚本
+	 * 执行SQL脚本  {@link SQLiteOpenHelper #onCreate(SQLiteDatabase)}里请勿调用此方法
+	 * @param is
 	 */
-	public void execCreateTableSQLScript(InputStream is){
+	public void execSQLScript(InputStream is){
+		SQLiteDatabase db=helper.getWritableDatabase();
+		execSQLScript(db, is);
+	}
+	/**
+	 * 执行SQL脚本  {@link SQLiteOpenHelper #onCreate(SQLiteDatabase)}里可以调用此方法
+	 * @param db
+	 * @param is
+	 */
+	public void execSQLScript(SQLiteDatabase db,InputStream is){
 //		InputStream is = context.getResources().openRawResource(R.raw.olympic);
 		try {
-			SQLiteDatabase db=helper.getWritableDatabase();
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			String str = null;
 			StringBuffer sql = new StringBuffer();
@@ -72,9 +81,7 @@ public abstract class BaseSQL{
 				LogUtil.e(e);
 			}
 		}
-		
 	}
-	
 	/**
 	 * 数据库建表的方法，并提供返回SQLiteDatabase,进行数据库后续操作
 	 * create table(_id INTEGER PRIMARY KEY AUTOINCREMENT,time TEXT);
@@ -82,8 +89,7 @@ public abstract class BaseSQL{
 	 * @param columns 是每列的集合,String的格式_id INTEGER PRIMARY KEY AUTOINCREMENT
 	 * @return SQLiteDatabase对象，用于做关闭操作
 	 */
-	public  void createTable(String table,List<String> columns) {
-		SQLiteDatabase db=helper.getWritableDatabase();
+	public  void createTable(SQLiteDatabase db,String table,List<String> columns) {
 		try {
 			StringBuffer str = new StringBuffer();
 			for(String column:columns){
@@ -98,14 +104,24 @@ public abstract class BaseSQL{
 			LogUtil.e("建表的sql语句有错误.");
 		}
 	} 
+	/**
+	 * 数据库建表的方法，并提供返回SQLiteDatabase,进行数据库后续操作
+	 * create table(_id INTEGER PRIMARY KEY AUTOINCREMENT,time TEXT);
+	 * @param table 创建的表的名称
+	 * @param columns 是每列的集合,String的格式_id INTEGER PRIMARY KEY AUTOINCREMENT
+	 * @return SQLiteDatabase对象，用于做关闭操作
+	 */
+	public  void createTable(String table,List<String> columns) {
+		SQLiteDatabase db=helper.getWritableDatabase();
+		createTable(db, table, columns);
+	} 
 	
 	/**
 	 * 删除数据库的表名为table的表
 	 * @param table 删除的表的名称
 	 */
-	public  void dropTable(String table){
+	public  void dropTable(SQLiteDatabase db,String table){
 		try {
-			SQLiteDatabase db=helper.getWritableDatabase();
 			String sql = "DROP TABLE "+table;
 			db.execSQL(sql);
 			db.close();
@@ -114,7 +130,14 @@ public abstract class BaseSQL{
 			LogUtil.e("删除数据库的sql有错误");
 		}
 	}
-	
+	/**
+	 * 删除数据库的表名为table的表
+	 * @param table 删除的表的名称
+	 */
+	public  void dropTable(String table){
+		SQLiteDatabase db=helper.getWritableDatabase();
+		dropTable(db, table);
+	}
 	/**
 	 * 用于DB做分页操作的。查询出的结果是所有字段的
 	 * @param table从第几条数据开始查询
