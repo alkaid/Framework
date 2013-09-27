@@ -56,7 +56,8 @@ public abstract class BaseSQL{
 			String str = null;
 			StringBuffer sql = new StringBuffer();
 			while((str = br.readLine())!=null){
-				if(str.substring(str.length()-1).equals(";")){
+				if(str.trim().length()>0&&
+						str.substring(str.length()-1).equals(";")){
 					sql.append(str.replaceAll(";", ""));
 					db.execSQL(sql.toString());
 					sql.delete(0, sql.length());
@@ -65,8 +66,6 @@ public abstract class BaseSQL{
 				sql.append(str+"\n");
 				
 			}
-			db.close();
-			LogUtil.i(sql.toString());			
 		} catch (SQLException e) {
 			LogUtil.e("脚本执行出错");
 			LogUtil.e(e);
@@ -75,6 +74,7 @@ public abstract class BaseSQL{
 			LogUtil.e(e);
 		}finally{
 			try {
+//				db.close();
 				is.close();
 			} catch (IOException e) {
 				LogUtil.e("输入的流不存在，为空");
